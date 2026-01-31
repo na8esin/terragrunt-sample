@@ -26,3 +26,8 @@ remote_state {
     skip_bucket_enforced_tls = true
   }
 }
+
+inputs = {
+  env = "stage"
+  app_name = "watanabe"
+}
