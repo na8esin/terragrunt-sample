@@ -1,4 +1,4 @@
-FROM alpine/terragrunt:1.12.2
+FROM alpine/terragrunt:1.14.8
 
 RUN apk --update add \
       aws-cli
