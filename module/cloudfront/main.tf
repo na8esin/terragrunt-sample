@@ -50,6 +50,14 @@ data "aws_iam_policy_document" "origin_bucket_policy" {
   }
 }
 
+resource "aws_cloudfront_function" "test" {
+  name    = "test"
+  runtime = "cloudfront-js-2.0"
+  comment = "my function"
+  publish = true
+  code    = file("${path.module}/function.js")
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name              = aws_s3_bucket.b.bucket_regional_domain_name
@@ -79,6 +87,28 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
+  }
+
+  ordered_cache_behavior {
+    cached_methods = ["GET", "HEAD"]
+    allowed_methods = ["GET", "HEAD"]
+    path_pattern = "/*"
+    target_origin_id = local.s3_origin_id
+    viewer_protocol_policy = "allow-all"
+
+    forwarded_values {
+      query_string = false
+      headers      = ["Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.test.arn
+    }
   }
 
   price_class = "PriceClass_200" # 日本を含む
