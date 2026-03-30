@@ -98,3 +98,33 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cloudfront_default_certificate = true
   }
 }
+
+resource "aws_cloudwatch_log_delivery_source" "example" {
+  region = "us-east-1"
+
+  name         = "watanabe-example-log-delivery-source"
+  log_type     = "ACCESS_LOGS"
+  resource_arn = aws_cloudfront_distribution.s3_distribution.arn
+}
+
+#  CloudWatch Logsのロググループを作成
+resource "aws_cloudwatch_log_group" "example" {
+  name = "watanabe-example-log-group"
+  region = "us-east-1"
+}
+
+resource "aws_cloudwatch_log_delivery_destination" "example" {
+  name = "watanabe-example-log-delivery-destination"
+  region = "us-east-1"
+
+  delivery_destination_configuration {
+    destination_resource_arn = aws_cloudwatch_log_group.example.arn
+  }
+}
+
+resource "aws_cloudwatch_log_delivery" "example" {
+  region = "us-east-1"
+
+  delivery_source_name     = aws_cloudwatch_log_delivery_source.example.name
+  delivery_destination_arn = aws_cloudwatch_log_delivery_destination.example.arn
+}
