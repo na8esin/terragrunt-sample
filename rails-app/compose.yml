@@ -1,0 +1,20 @@
+services:
+  rails:
+    build: .
+    environment:
+      EDITOR: vim
+      RAILS_LOG_TO_STDOUT: "true"
+      BINDING: 0.0.0.0
+    volumes:
+      - ./src:/usr/src
+      - bundle-volume:/usr/local/bundle
+    working_dir: /usr/src
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    privileged: true
+volumes:
+  bundle-volume:
