@@ -12,3 +12,4 @@ services:
       - AWS_CONFIG_FILE=/root/.aws/config
       - AWS_SSO_SESSION=pm_local_session
       - AWS_PROFILE=${AWS_PROFILE}
+      - TF_VAR_aws_account_id=${AWS_ACCOUNT_ID}

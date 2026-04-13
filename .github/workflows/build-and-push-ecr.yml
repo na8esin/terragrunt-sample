@@ -1,8 +1,35 @@
 name: build and push ecr
-on: [push]
+on: [ push ]
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: ap-northeast-1
+  ECR_REPOSITORY: sample
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com/watanabe
+
+# buildspec-override:true はbuildspecが必要な設定
+# 実行モードをec2に設定できない。vpcモードじゃないと無理そう？
 jobs:
   Hello-World-Job:
     runs-on:
       - codebuild-watanabe-${{ github.run_id }}-${{ github.run_attempt }}
+        image:arm-3.0 instance-size:small
+
     steps:
-      - run: docker build -t hello-world:latest ./rails-app
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - run: aws --version
+
+      - name: Login to ECR
+        run: aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+      - name: Build Docker image
+        run: docker build -t hello-world:latest ./rails-app
+
+      - name: Push to ECR
+        run: |
+          docker tag hello-world:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
