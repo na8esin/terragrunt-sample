@@ -5,4 +5,4 @@ jobs:
     runs-on:
       - codebuild-watanabe-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-      - run: docker build -t hello-world:latest .
+      - run: docker build -t hello-world:latest ./rails-app
