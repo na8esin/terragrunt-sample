@@ -1,0 +1,8 @@
+name: build and push ecr
+on: [push]
+jobs:
+  Hello-World-Job:
+    runs-on:
+      - codebuild-watanabe-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - run: docker build -t hello-world:latest .
