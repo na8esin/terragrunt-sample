@@ -11,6 +11,3 @@ terragrunt init
 
 ## CodeBuild がホストする GitHub Actions ランナーでサポートされているコンピューティングイメージ
 https://docs.aws.amazon.com/ja_jp/codebuild/latest/userguide/sample-github-action-runners-update-yaml.images.html
-
-## image
-public.ecr.aws/codebuild/amazonlinux-aarch64-lambda-standard:ruby3.4
